@@ -44,9 +44,15 @@ tempRouter.route('/TempByTime/:time')
         if(user){
             Temps.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
             .then(result => {
+                var arr = new Array(0);
+
+                result.map(res => {
+                  arr.push(res);
+                })
+
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(result);
+                res.json(arr);
             })
             .catch(err => {
                 res.statusCode = 403;
