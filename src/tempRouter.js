@@ -47,7 +47,7 @@ tempRouter.route('/TempByTime/:time')
                 var arr = new Array(0);
 
                 result.map(res => {
-                  arr.push(res);
+                  arr.push(res.mean);
                 })
 
                 res.statusCode = 200;
