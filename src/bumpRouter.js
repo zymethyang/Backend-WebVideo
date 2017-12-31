@@ -38,7 +38,7 @@ bumpRouter.route('/')
         }
     })
     .post((req, res, next) => {
-        var user = firebase.auth().currentUser;
+        var user = firebase.auth().currentUser || false;
         if (user) {
             console.log(user.uid + ' POST Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Bumps.create({
@@ -47,13 +47,17 @@ bumpRouter.route('/')
                 startedAt: moment(FieldValue.serverTimestamp()).unix(),
                 updatedAt: moment(FieldValue.serverTimestamp()).unix()
             }).then(function (docRef) {
+                res.statusCode = 200;
                 res.json({"status":"Successful"});
             }).catch(function (error) {
+                res.statusCode = 403;
+                res.json('Error');
                 console.error("Error adding document: ", error);
             });
         } else {
             console.log(user.uid + ' Fail to POST Bump Status !');
             res.json('Error');
+            res.statusCode = 403;
         }
     })
     .put((req, res, next) => {
