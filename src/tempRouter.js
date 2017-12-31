@@ -132,15 +132,17 @@ tempRouter.route('/TempByTime/:time')
             .get((req, res, next) => {
                 var gap = parseInt(req.params.gap);
                 var i;
+                var data = new Array(0);
                 var user = firebase.auth().currentUser || false;
                 if(user){
                     Temps.find({ uid: user.uid }).limit(336).sort({ 'updatedAt': -1 })
                     .then(result => {
                         for(i=0;i< result.length;i=i+gap){
-                          res.statusCode = 200;
-                          res.setHeader('Content-Type', 'application/json');
-                          res.json(result[i]);
+                          data.push(result[i])
                         }
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json(data);
                     })
                     .catch(err => {
                         res.statusCode = 200;
