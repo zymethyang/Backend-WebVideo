@@ -5,7 +5,7 @@ userRouter.use(bodyParser.json());
 
 const admin = require('./firebase-admin');
 const firebase = require('./firebase-admin');
-var network = require('network');
+
 
 userRouter.route('/register')
     .all((req, res, next) => {
@@ -137,15 +137,25 @@ userRouter.route('/getStatus')
         res.end('POST operation not supported on /getStatus');
     })
     .get((req, res, next) => {
-        var user = firebase.auth().currentUser;
+        var user = firebase.auth().currentUser || false;
         if (user) {
+            
+            var id = {
+                "uid":user.uid,
+                "displayName":user.displayName,
+                "photoURL":user.photoURL,
+                "email":user.email,
+                "emailVerified":user.emailVerified,
+                "phoneNumber":user.phoneNumber,
+            }
+
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json('Logged');
+            res.json(id);
         } else {
             res.statusCode = 403;
             res.setHeader('Content-Type', 'application/json');
-            res.json('Not Logged');
+            res.json(null);
         }
     })
     .put((req, res, next) => {
