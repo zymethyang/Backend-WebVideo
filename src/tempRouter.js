@@ -96,7 +96,7 @@ tempRouter.route('/TempByTime/:time')
                 .then(result => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
-                    res.json({"temp":result.temp,"mean":result.mean,"time":result.startedAt});
+                    res.json(result);
                 })
                 .catch(err => {
                     res.statusCode = 200;
