@@ -60,14 +60,9 @@ userRouter.route('/login')
         next();
     })
     .get((req, res, next) => {
-        var user = firebase.auth().currentUser;
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        if(user){
-            res.json(user.uid);
-        }else{
-          res.json({"status":"Unsuccessful"});
-        }
+      res.statusCode = 403;
+      res.setHeader('Content-Type', 'application/json');
+      res.end('GET operation not supported on /login');
     })
     .post((req, res, next) => {
         firebase.auth().signInWithEmailAndPassword(req.body.email, req.body.password)
@@ -77,7 +72,7 @@ userRouter.route('/login')
                 res.json(true);
             })
             .catch(function (error) {
-                res.statusCode = 403;
+                res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json(false);
             });
