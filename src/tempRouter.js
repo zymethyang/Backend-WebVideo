@@ -44,15 +44,18 @@ tempRouter.route('/TempByTime/:time')
         if(user){
             Temps.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
             .then(result => {
-                var arr = new Array(0);
-
+                var arrData = new Array(0);
+                var arrTime = new Array(0);
+                console.log(result);
                 result.map(res => {
-                  arr.push(res.mean);
-                })
-
+                  arrData.push(res.mean);
+                });
+                result.map(res => {
+                  arrTime.push(res.startedAt);
+                });
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(arr);
+                res.json({"data":arrData,"time":arrTime});
             })
             .catch(err => {
                 res.statusCode = 403;
