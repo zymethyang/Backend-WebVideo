@@ -3,15 +3,11 @@ const bodyParser = require('body-parser');
 const bumpRouter = express.Router();
 bumpRouter.use(bodyParser.json());
 
-const mongoose = require('mongoose');
 const Bumps = require('./models/bumps');
 const admin = require('firebase-admin');
-var db = admin.firestore();
 const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
-var io = require('socket.io');
-var FieldValue = require("firebase-admin").firestore.FieldValue;
 
 bumpRouter.route('/')
     .all((req, res, next) => {
@@ -42,7 +38,7 @@ bumpRouter.route('/')
                 console.error("Error adding document: ", error);
             });
         } else {
-            console.log(user.uid + ' Fail to POST Bump Status !');
+            console.log(' Fail to POST Bump Status !');
             res.json('Error');
             res.statusCode = 403;
         }
