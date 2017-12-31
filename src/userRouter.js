@@ -103,11 +103,11 @@ userRouter.route('/logout')
         firebase.auth().signOut().then(() => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json('Logged out');
+            res.json(true);
         }).catch(function (error) {
-            res.statusCode = 403;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json('Error');
+            res.json(false);
         });
     })
     .put((req, res, next) => {
