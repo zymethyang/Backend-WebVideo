@@ -148,7 +148,7 @@ userRouter.route('/getStatus')
             res.setHeader('Content-Type', 'application/json');
             res.json(id);
         } else {
-            res.statusCode = 403;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(null);
         }
