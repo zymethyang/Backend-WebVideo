@@ -122,7 +122,7 @@ tempRouter.route('/TempByTime/:time')
             res.end('DELETE operation not supported');
         });
 
-        tempRouter.route('/Temp7Day/:gap')
+        tempRouter.route('/Temp7Day/:gap/:day')
             .all((req, res, next) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -131,11 +131,12 @@ tempRouter.route('/TempByTime/:time')
             })
             .get((req, res, next) => {
                 var gap = parseInt(req.params.gap);
+                var day = parseInt(req.params.day);
                 var i;
                 var data = new Array(0);
                 var user = firebase.auth().currentUser || false;
                 if(user){
-                    Temps.find({ uid: user.uid }).limit(336).sort({ 'updatedAt': -1 })
+                    Temps.find({ uid: user.uid }).limit(day).sort({ 'updatedAt': -1 })
                     .then(result => {
                         for(i=0;i< result.length;i=i+gap){
                           data.push(result[i])
