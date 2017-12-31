@@ -58,13 +58,13 @@ tempRouter.route('/TempByTime/:time')
                 res.json({"data":arrData,"time":arrTime});
             })
             .catch(err => {
-                res.statusCode = 403;
+                res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json("Error");
                 console.log(err);
             });
         }else{
-            res.statusCode = 403;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json("Error");
         }
@@ -80,6 +80,47 @@ tempRouter.route('/TempByTime/:time')
     .delete((req, res, next) => {
         res.end('DELETE operation not supported');
     });
+
+    tempRouter.route('/TempDetailTime/:time')
+        .all((req, res, next) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.header('Access-Control-Allow-Origin', '*');
+            next();
+        })
+        .get((req, res, next) => {
+            var time = parseInt(req.params.time);
+            var user = firebase.auth().currentUser || false;
+            if(user){
+                Temps.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
+                .then(result => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({"temp":result.temp,"mean":result.mean,"time":result.startedAt});
+                })
+                .catch(err => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json("Error");
+                    console.log(err);
+                });
+            }else{
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json("Error");
+            }
+        })
+        .post((req, res, next) => {
+            res.statusCode = 403;
+            res.end('POST operation not supported');
+        })
+        .put((req, res, next) => {
+            res.statusCode = 403;
+            res.end('PUT operation not supported');
+        })
+        .delete((req, res, next) => {
+            res.end('DELETE operation not supported');
+        });
 
 
 module.exports = tempRouter;
