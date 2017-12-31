@@ -74,12 +74,12 @@ userRouter.route('/login')
             .then((result) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({"status":"Successful"});
+                res.json(true);
             })
             .catch(function (error) {
                 res.statusCode = 403;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({"status":"Unsuccessful"});
+                res.json(false);
             });
     })
     .put((req, res, next) => {
@@ -139,7 +139,7 @@ userRouter.route('/getStatus')
     .get((req, res, next) => {
         var user = firebase.auth().currentUser || false;
         if (user) {
-            
+
             var id = {
                 "uid":user.uid,
                 "displayName":user.displayName,
