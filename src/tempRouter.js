@@ -46,7 +46,6 @@ tempRouter.route('/TempByTime/:time')
             .then(result => {
                 var arrData = new Array(0);
                 var arrTime = new Array(0);
-                console.log(result);
                 result.map(res => {
                   arrData.push(res.mean);
                 });
