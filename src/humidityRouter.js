@@ -42,9 +42,17 @@ humidityRouter.route('/')
             if(user){
                 Humiditys.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
                 .then(result => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(result);
+                  var arrData = new Array(0);
+                  var arrTime = new Array(0);
+                  result.map(res => {
+                    arrData.push(res.mean);
+                  });
+                  result.map(res => {
+                    arrTime.push(res.startedAt);
+                  });
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.json({"data":arrData,"time":arrTime});
                 })
                 .catch(err => {
                     res.statusCode = 403;
