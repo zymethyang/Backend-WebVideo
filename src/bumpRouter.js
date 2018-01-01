@@ -16,8 +16,27 @@ bumpRouter.route('/')
         next();
     })
     .get((req, res) => {
-        res.statusCode = 403;
-        res.end('GET operation not supported on /bumps');
+        var user = firebase.auth().currentUser || false;
+        if (user) {
+            console.log(user.uid + ' GET Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
+            Bumps.find({ uid: user.uid }).sort({ updatedAt: -1 })
+                .then(bump => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(bump.reverse());
+                })
+                .catch(err => {
+                    console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
+                    res.statusCode = 403;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json('Error');
+                });
+        } else {
+            console.log(' Fail to GET Bump Status !');
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 403;
+            res.json('Error');
+        }
     })
     .post((req, res, next) => {
         var user = firebase.auth().currentUser || false;
