@@ -30,15 +30,15 @@ bumpRouter.route('/')
                 updatedAt: moment(FieldValue.serverTimestamp()).unix()
             }).then(() => {
                 res.statusCode = 200;
-                res.json({ "status": "Successful" });
+                res.json(true);
             }).catch(function (error) {
                 res.statusCode = 403;
-                res.json({ "status": "Error" });
+                res.json(false);
                 console.error("Error adding document: ", error);
             });
         } else {
             console.log(' Fail to POST Bump Status !');
-            res.json('Error');
+            res.json(false);
             res.statusCode = 403;
         }
     })
