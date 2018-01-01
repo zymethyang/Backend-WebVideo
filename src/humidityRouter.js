@@ -70,7 +70,7 @@ humidityRouter.route('/')
             res.end('DELETE operation not supported on');
         });
 
-        HumidityRouter.route('/HumidityDetailTime/:time')
+        humidityRouter.route('/HumidityDetailTime/:time')
             .all((req, res, next) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
