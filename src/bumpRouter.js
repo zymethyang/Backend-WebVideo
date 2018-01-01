@@ -23,11 +23,11 @@ bumpRouter.route('/')
                 .then(bump => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
-                    res.json(bump.reverse());
+                    res.json(bump);
                 })
                 .catch(err => {
                     console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
-                    res.statusCode = 403;
+                    res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json('Error');
                 });
