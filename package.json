@@ -4,7 +4,7 @@
   "description": "Express with Firebase powered backend server",
   "main": "src/index.js",
   "scripts": {
-    "start": "node --gc_global --optimize_for_size --max_old_space_size=960 --use_idle_notification --always_compact --max_executable_size=64 --gc_interval=100 --expose_gc src/index.js",
+    "start": "node --optimize_for_size --max_old_space_size=920 src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
