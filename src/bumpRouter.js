@@ -34,7 +34,7 @@ bumpRouter.route('/')
         } else {
             console.log(' Fail to GET Bump Status !');
             res.setHeader('Content-Type', 'application/json');
-            res.statusCode = 403;
+            res.statusCode = 200;
             res.json('Error');
         }
     })
@@ -51,14 +51,14 @@ bumpRouter.route('/')
                 res.statusCode = 200;
                 res.json(true);
             }).catch(function (error) {
-                res.statusCode = 403;
+                res.statusCode = 200;
                 res.json(false);
                 console.error("Error adding document: ", error);
             });
         } else {
             console.log(' Fail to POST Bump Status !');
             res.json(false);
-            res.statusCode = 403;
+            res.statusCode = 200;
         }
     })
     .put((req, res, next) => {
@@ -90,14 +90,14 @@ bumpRouter.route('/doingTask')
                 })
                 .catch(err => {
                     console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
-                    res.statusCode = 403;
+                    res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json('Error');
                 });
         } else {
             console.log(' Fail to GET Bump Status !');
             res.setHeader('Content-Type', 'application/json');
-            res.statusCode = 403;
+            res.statusCode = 200;
             res.json('Error');
         }
     })
@@ -113,6 +113,57 @@ bumpRouter.route('/doingTask')
         res.statusCode = 403;
         res.end('DELETE operation not supported on /bumps');
     });
+
+    bumpRouter.route('/nameBump')
+        .all((req, res, next) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.header('Access-Control-Allow-Origin', '*');
+            next();
+        })
+        .get((req, res) => {
+            var user = firebase.auth().currentUser || false;
+            if (user) {
+                console.log(user.uid + ' GET Name Bump ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
+                Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
+                    .then(bump => {
+                        var name = new Array(0);
+                        var value = new Array(0);
+
+                        for(var i=0;i<bump.length;i++){
+                          name.push(Object.keys(bump[i].status.bump));
+                          value.push(bump[i].status.bump);
+                        }
+
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json({"name":name.reverse(),"value":value.reverse()});
+                    })
+                    .catch(err => {
+                        console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json('Error');
+                    });
+            } else {
+                console.log(' Fail to GET Bump Status !');
+                res.setHeader('Content-Type', 'application/json');
+                res.statusCode = 403;
+                res.json('Error');
+            }
+        })
+        .post((req, res, next) => {
+            res.statusCode = 403;
+            res.end('POST operation not supported on /bumps');
+        })
+        .put((req, res, next) => {
+            res.statusCode = 403;
+            res.end('PUT operation not supported on /bumps');
+        })
+        .delete((req, res, next) => {
+            res.statusCode = 403;
+            res.end('DELETE operation not supported on /bumps');
+        });
 
 bumpRouter.route('/tempTask')
     .all((req, res, next) => {
