@@ -128,16 +128,20 @@ bumpRouter.route('/doingTask')
                 Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
                     .then(bump => {
                         var name = new Array(0);
-                        var value = new Array(0);
-
+                        console.log(bump);
                         for(var i=0;i<bump.length;i++){
-                          name.push(Object.keys(bump[i].status.bump));
-                          value.push(bump[i].status.bump);
+                          var key = Object.keys(bump[i].status.bump);
+                          name[i] = new Array(0);
+                          for(var j=0;j<key.length;j++){
+                              if(bump[i].status.bump[key[j]]){
+                                name[i].push(key[j]);
+                                console.log(key[j]);
+                              }
+                          }
                         }
-
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json({"name":name.reverse(),"value":value.reverse()});
+                        res.json(name.reverse());
                     })
                     .catch(err => {
                         console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
