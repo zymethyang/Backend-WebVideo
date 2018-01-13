@@ -70,7 +70,7 @@ bumpRouter.route('/')
         res.end('DELETE operation not supported on /bumps');
     });
 
-    bumpRouter.route('/:bumpId')
+    bumpRouter.route('/delete/:bumpId')
         .all((req, res, next) => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
