@@ -70,6 +70,45 @@ bumpRouter.route('/')
         res.end('DELETE operation not supported on /bumps');
     });
 
+    bumpRouter.route('/:bumpId')
+        .all((req, res, next) => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.header('Access-Control-Allow-Origin', '*');
+          next();
+        })
+        .get((req, res, next) => {
+          res.statusCode = 200;
+          res.end('GET operation not supported on /bumps');
+        })
+        .post((req, res, next) => {
+            res.statusCode = 200;
+            res.end('POST operation not supported on /bumps/' + req.params.bumpId);
+        })
+        .put((req, res, next) => {
+            res.statusCode = 200;
+            res.end('PUT operation not supported on /bumps');
+        })
+        .delete((req, res, next) => {
+          var user = firebase.auth().currentUser || false;
+          if (user) {
+              console.log(user.uid + ' DELETE Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
+              Bumps.findByIdAndRemove(req.params.bumpId)
+                  .then(() => {
+                  res.statusCode = 200;
+                  res.json(true);
+              }).catch(function (error) {
+                  res.statusCode = 200;
+                  res.json(false);
+                  console.error("Fail to DELETE Bump Status ! ", error);
+              });
+          } else {
+              console.log(' Fail to DELETE Bump Status !');
+              res.json(false);
+              res.statusCode = 200;
+          }
+        });
+
 
 bumpRouter.route('/doingTask')
     .all((req, res, next) => {
@@ -135,7 +174,6 @@ bumpRouter.route('/doingTask')
                           for(var j=0;j<key.length;j++){
                               if(bump[i].status.bump[key[j]]){
                                 name[i].push(key[j]);
-                                console.log(key[j]);
                               }
                           }
                         }
