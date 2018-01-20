@@ -293,4 +293,91 @@ bumpRouter.route('/humidityTask')
         res.end('DELETE operation not supported on /bumps');
     });
 
+    bumpRouter.route('/name/:name')
+        .all((req, res, next) => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.header('Access-Control-Allow-Origin', '*');
+            next();
+        })
+        .get((req, res) => {
+            var user = firebase.auth().currentUser || false;
+            var name = req.params.name;
+            if (user) {
+              console.log(user.uid + ' GET Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
+              Bumps.findOne({ $and: [{ uid: user.uid }, { 'name.name': { $eq: name } }] }).sort({ updatedAt: -1 })
+                  .then(bump => {
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', 'application/json');
+                      res.json(bump);
+                  })
+                  .catch(err => {
+                      console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', 'application/json');
+                      res.json('Error');
+              });
+          } else {
+              console.log(' Fail to GET Bump Status !');
+              res.setHeader('Content-Type', 'application/json');
+              res.statusCode = 200;
+              res.json('Error');
+          }
+        })
+        .post((req, res, next) => {
+          res.statusCode = 403;
+          res.end('POST operation not supported on /bumps');
+        })
+        .put((req, res, next) => {
+            res.statusCode = 403;
+            res.end('PUT operation not supported on /bumps');
+        })
+        .delete((req, res, next) => {
+            res.statusCode = 403;
+            res.end('DELETE operation not supported on /bumps');
+        });
+
+        bumpRouter.route('/name')
+            .all((req, res, next) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.header('Access-Control-Allow-Origin', '*');
+                next();
+            })
+            .get((req, res) => {
+              res.statusCode = 403;
+              res.end('GET operation not supported on /bumps');
+            })
+            .post((req, res, next) => {
+                var user = firebase.auth().currentUser || false;
+                if (user) {
+                    console.log(user.uid + ' POST Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
+                    Bumps.create({
+                        uid: user.uid,
+                        name: req.body,
+                        startedAt: moment(FieldValue.serverTimestamp()).unix(),
+                        updatedAt: moment(FieldValue.serverTimestamp()).unix()
+                    }).then(() => {
+                        res.statusCode = 200;
+                        res.json(true);
+                    }).catch(function (error) {
+                        res.statusCode = 200;
+                        res.json(false);
+                        console.error("Error adding document: ", error);
+                    });
+                } else {
+                    console.log(' Fail to POST Bump Status !');
+                    res.json(false);
+                    res.statusCode = 200;
+                }
+            })
+            .put((req, res, next) => {
+                res.statusCode = 403;
+                res.end('PUT operation not supported on /bumps');
+            })
+            .delete((req, res, next) => {
+                res.statusCode = 403;
+                res.end('DELETE operation not supported on /bumps');
+            });
+
 module.exports = bumpRouter;
