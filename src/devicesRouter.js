@@ -20,7 +20,7 @@ devicesRouter.route('/name/:name')
         if (user) {
             var name = req.params.name;
             console.log(user.uid + ' GET DEVICE Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
-            Devices.findOne({ $and: [{ uid: user.uid }, { name: { $exists: true } }] }).sort({ updatedAt: -1 })
+            Devices.findOne({ $and: [{ uid: user.uid }, { 'name.name': { $eq: name } }] }).sort({ updatedAt: -1 })
                 .then(device => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
