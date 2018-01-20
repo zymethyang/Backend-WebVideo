@@ -17,8 +17,8 @@ devicesRouter.route('/name/:name')
     })
     .get((req, res) => {
         var user = firebase.auth().currentUser || false;
-        var name = req.params.name;
         if (user) {
+            var name = req.params.name;
             console.log(user.uid + ' GET DEVICE Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Devices.findOne({ $and: [{ uid: user.uid }, { name: { $exists: true } }] }).sort({ updatedAt: -1 })
                 .then(device => {
