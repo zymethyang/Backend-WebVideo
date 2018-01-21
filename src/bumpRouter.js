@@ -8,6 +8,14 @@ const Bumps = require('./models/bumps');
 const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
+var mqtt = require('mqtt')
+var client  = mqtt.connect({
+    host:'m11.cloudmqtt.com',
+    port:'18101',
+    password:'WamZLQt7QU5w',
+    username:'uexskbzr'
+});
+
 
 bumpRouter.route('/')
     .all((req, res, next) => {
@@ -43,13 +51,6 @@ bumpRouter.route('/')
         var user = firebase.auth().currentUser || false;
         if (user) {
             console.log(user.uid + ' POST Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
-            var mqtt = require('mqtt')
-            var client  = mqtt.connect({
-                host:'m11.cloudmqtt.com',
-                port:'18101',
-                password:'WamZLQt7QU5w',
-                username:'uexskbzr'
-            });
             client.on('connect', function () {
                 client.subscribe(user.uid)
                 client.publish(user.uid,Buffer.from(JSON.stringify(req.body)));
