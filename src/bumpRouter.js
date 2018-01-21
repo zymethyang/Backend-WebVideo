@@ -8,13 +8,7 @@ const Bumps = require('./models/bumps');
 const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
-var mqtt = require('mqtt')
-var client  = mqtt.connect({
-    host:'m11.cloudmqtt.com',
-    port:'18101',
-    password:'WamZLQt7QU5w',
-    username:'uexskbzr'
-});
+
 
 
 bumpRouter.route('/')
@@ -51,10 +45,7 @@ bumpRouter.route('/')
         var user = firebase.auth().currentUser || false;
         if (user) {
             console.log(user.uid + ' POST Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
-            client.on('connect', function () {
-                client.subscribe(user.uid)
-                client.publish(user.uid,Buffer.from(JSON.stringify(req.body)));
-            })
+            
             Bumps.create({
                 uid: user.uid,
                 status: req.body,
@@ -68,6 +59,30 @@ bumpRouter.route('/')
                 res.json(false);
                 console.error("Error adding document: ", error);
             });
+
+            Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
+            .then(bump => {
+                var mqtt = require('mqtt');
+                var client  = mqtt.connect({
+                    host:'m11.cloudmqtt.com',
+                    port:'18101',
+                    password:'WamZLQt7QU5w',
+                    username:'uexskbzr'
+                });
+
+                client.on('connect', function () {
+                    client.subscribe(user.uid)
+                    client.publish(user.uid,Buffer.from(JSON.stringify(bump)));
+                })
+            })
+            .catch(err => {
+                console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json('Error');
+            });
+
+
         } else {
             console.log(' Fail to POST Bump Status !');
             res.json(false);
