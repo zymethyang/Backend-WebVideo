@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var mosca = require('mosca');
 
 const bumpRouter = express.Router();
 bumpRouter.use(bodyParser.json());
