@@ -52,6 +52,29 @@ bumpRouter.route('/')
                 startedAt: moment(FieldValue.serverTimestamp()).unix(),
                 updatedAt: moment(FieldValue.serverTimestamp()).unix()
             }).then(() => {
+
+                Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
+                .then(bump => {
+                    var mqtt = require('mqtt');
+                    var client  = mqtt.connect({
+                        host:'m11.cloudmqtt.com',
+                        port:'18101',
+                        password:'WamZLQt7QU5w',
+                        username:'uexskbzr'
+                    });
+
+                    client.on('connect', function () {
+                        client.subscribe(user.uid)
+                        client.publish(user.uid,Buffer.from(JSON.stringify(bump)));
+                    })
+            })
+            .catch(err => {
+                console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json('Error');
+            });
+
                 res.statusCode = 200;
                 res.json(true);
             }).catch(function (error) {
@@ -60,27 +83,7 @@ bumpRouter.route('/')
                 console.error("Error adding document: ", error);
             });
 
-            Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
-            .then(bump => {
-                var mqtt = require('mqtt');
-                var client  = mqtt.connect({
-                    host:'m11.cloudmqtt.com',
-                    port:'18101',
-                    password:'WamZLQt7QU5w',
-                    username:'uexskbzr'
-                });
-
-                client.on('connect', function () {
-                    client.subscribe(user.uid)
-                    client.publish(user.uid,Buffer.from(JSON.stringify(bump)));
-                })
-            })
-            .catch(err => {
-                console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json('Error');
-            });
+            
 
 
         } else {
