@@ -57,10 +57,10 @@ bumpRouter.route('/')
                 .then(bump => {
                     var mqtt = require('mqtt');
                     var client  = mqtt.connect({
-                        host:'m11.cloudmqtt.com',
-                        port:'18101',
-                        password:'WamZLQt7QU5w',
-                        username:'uexskbzr'
+                        host:'m14.cloudmqtt.com',
+                        port:'18979',
+                        password:'j2w57S0HNLKz',
+                        username:'amamfazq'
                     });
 
                     client.on('connect', function () {
