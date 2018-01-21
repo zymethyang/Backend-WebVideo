@@ -55,6 +55,12 @@ bumpRouter.route('/')
 
                 Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
                 .then(bump => {
+
+                    var data = [];
+                    for(var i=0;i<bump.length;i++){
+                        data.push({'cHa':bump.status.cHand,'cHum':bump.status.cHumidity,'cTe':bump.status.cTemp,'te':bump.status.temp,'cCa':bump.status.cCalender,'du':bump.status.duration,'time':bump.status.time,'bump':bump.status.bump});
+                    }
+
                     var mqtt = require('mqtt');
                     var client  = mqtt.connect({
                         host:'195.181.246.243',
@@ -65,8 +71,10 @@ bumpRouter.route('/')
 
                     client.on('connect', function () {
                         client.subscribe(user.uid)
-                        client.publish(user.uid,Buffer.from(JSON.stringify(bump)));
+                        client.publish(user.uid,Buffer.from(JSON.stringify(data)));
                     })
+
+                    console.log()
             })
             .catch(err => {
                 console.log(user.uid || 'None' + ' Fail to GET Bump Status ! ' + err);
