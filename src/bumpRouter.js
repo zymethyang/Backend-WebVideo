@@ -65,12 +65,7 @@ bumpRouter.route('/')
             });
             client.on('connect', function () {
                 client.subscribe(user.uid)
-                client.publish(user.uid, {
-                    uid: user.uid,
-                    status: req.body,
-                    startedAt: moment(FieldValue.serverTimestamp()).unix(),
-                    updatedAt: moment(FieldValue.serverTimestamp()).unix()
-                })
+                client.publish(user.uid,Buffer.from(JSON.stringify(req.body)));
             })
         } else {
             console.log(' Fail to POST Bump Status !');
