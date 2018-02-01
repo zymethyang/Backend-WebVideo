@@ -65,7 +65,8 @@ bumpRouter.route('/')
 
                     client.on('connect', function () {
                         client.subscribe(user.uid)
-                        client.publish(user.uid,Buffer.from(JSON.stringify(bump)));
+                        client.publish(user.uid+'/calender',Buffer.from(JSON.stringify(bump)));
+                        client.publish(user.uid+'/hand',Buffer.from(JSON.stringify(req.body)));
                     })
             })
             .catch(err => {
