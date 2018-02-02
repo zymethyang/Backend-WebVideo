@@ -26,6 +26,7 @@ const tempRouter = require('./tempRouter');
 const humidityRouter = require('./humidityRouter');
 const bumpRouter = require('./bumpRouter');
 const devicesRouter = require('./devicesRouter');
+const realTimeRouter = require('./realtimeRouter');
 
 app.use('/', router);
 app.use('/temp',tempRouter);
@@ -33,6 +34,7 @@ app.use('/humidity',humidityRouter);
 app.use('/user',userRouter);
 app.use('/bump',bumpRouter);
 app.use('/device',devicesRouter);
+app.use('/realtime',realTimeRouter);
 
 app.listen(port);
 
