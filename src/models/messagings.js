@@ -8,7 +8,7 @@ var messagingsSchema = new Schema({
         required: true
     },
     token:  {
-        type: Array,
+        type: String,
         required:true
     },
     uid: {

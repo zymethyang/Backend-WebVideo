@@ -40,17 +40,26 @@ messagingRouter.route('/token')
         next();
     })
     .get((req, res, next) => {
-        res.statusCode = 403;
-        res.end('GET operation not supported');
+        var user = firebase.auth().currentUser || false;
+        if (user) {
+            Messagings.find({ $and: [{ uid: user.uid }, { token: req.body.token }] })
+                .then(result => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(result);
+                })
+        } else {
+            res.statusCode = 403;
+            res.setHeader('Content-Type', 'application/json');
+            res.json('Error');
+        }
     })
     .post((req, res, next) => {
         var user = firebase.auth().currentUser || false;
         if (user) {
-            var token = new Array(0);
-            Messagings.findOne({ uid: user.uid })
+            Messagings.findOne({ $and: [{ uid: user.uid }, { token: req.body.token }] })
                 .then(result => {
-                    token = (result === null) ? [] : result.token;
-                    if (token.length < 1) {
+                    if (result === null) {
                         Messagings.create({
                             uid: user.uid,
                             token: [req.body.token],
@@ -62,19 +71,9 @@ messagingRouter.route('/token')
                             res.json('Successful');
                         })
                     } else {
-                        token.push(req.body.token);
-                        Messagings.findOneAndUpdate(
-                            { "uid": user.uid },
-                            {
-                                uid: user.uid,
-                                token: token,
-                                startedAt: moment(FieldValue.serverTimestamp()).unix(),
-                                updatedAt: moment(FieldValue.serverTimestamp()).unix()
-                            }
-                        ).then(() => {
-                            res.setHeader('Content-Type', 'application/json');
-                            res.json('Successful');
-                        })
+                        res.statusCode = 200;
+                        res.setHeader('Content-Type', 'application/json');
+                        res.json('Successful');
                     }
                 })
         } else {
