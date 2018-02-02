@@ -4,11 +4,12 @@ const realtimeRouter = express.Router();
 realtimeRouter.use(bodyParser.json());
 
 const Realtime = require('./models/realTime');
+const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
 
 
-realtimeRouter.route('/:uid')
+realtimeRouter.route('/')
     .all((req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -28,7 +29,6 @@ realtimeRouter.route('/:uid')
               res.statusCode = 200;
               res.setHeader('Content-Type', 'application/json');
               res.json("Error");
-              console.log(err);
           });
       }else{
           res.statusCode = 200;
