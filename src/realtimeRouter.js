@@ -5,9 +5,6 @@ realtimeRouter.use(bodyParser.json());
 
 const Realtime = require('./models/realTime');
 const firebase = require("firebase");
-var FieldValue = require("firebase-admin").firestore.FieldValue;
-var moment = require('moment');
-
 
 realtimeRouter.route('/')
     .all((req, res, next) => {
