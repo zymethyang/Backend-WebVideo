@@ -29,6 +29,7 @@ const devicesRouter = require('./devicesRouter');
 const realTimeRouter = require('./realtimeRouter');
 const messagingRouter = require('./messagingRouter');
 const feedbackRouter = require('./feedbackRouter');
+const errorRouter = require('./errorRouter');
 
 app.use('/', router);
 app.use('/temp',tempRouter);
@@ -39,6 +40,7 @@ app.use('/device',devicesRouter);
 app.use('/realtime',realTimeRouter);
 app.use('/messaging',messagingRouter);
 app.use('/feedback',feedbackRouter);
+app.use('/error',errorRouter);
 
 app.listen(port);
 
