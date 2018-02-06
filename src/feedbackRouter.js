@@ -6,7 +6,7 @@ feedbackRouter.use(bodyParser.json());
 const Feedback = require('./models/feedback');
 var FieldValue = require('firebase-admin').firestore.FieldValue;
 var moment = require('moment');
-
+const firebase = require("firebase");
 
 feedbackRouter.route('/')
     .all((req, res, next) => {
