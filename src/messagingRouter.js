@@ -42,7 +42,7 @@ messagingRouter.route('/token')
     .get((req, res, next) => {
         var user = firebase.auth().currentUser || false;
         if (user) {
-            Messagings.find({ $and: [{ uid: user.uid }, { token: req.body.token }] })
+            Messagings.find({ uid: user.uid })
                 .then(result => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');

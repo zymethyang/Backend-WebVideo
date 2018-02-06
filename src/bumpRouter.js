@@ -45,7 +45,6 @@ bumpRouter.route('/')
         var user = firebase.auth().currentUser || false;
         if (user) {
             console.log(user.uid + ' POST Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
-            
             Bumps.create({
                 uid: user.uid,
                 status: req.body,
@@ -83,10 +82,6 @@ bumpRouter.route('/')
                 res.json(false);
                 console.error("Error adding document: ", error);
             });
-
-            
-
-
         } else {
             console.log(' Fail to POST Bump Status !');
             res.json(false);
@@ -325,5 +320,5 @@ bumpRouter.route('/humidityTask')
         res.end('DELETE operation not supported on /bumps');
     });
 
-  
+
 module.exports = bumpRouter;

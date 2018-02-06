@@ -28,6 +28,7 @@ const bumpRouter = require('./bumpRouter');
 const devicesRouter = require('./devicesRouter');
 const realTimeRouter = require('./realtimeRouter');
 const messagingRouter = require('./messagingRouter');
+const feedbackRouter = require('./feedbackRouter');
 
 app.use('/', router);
 app.use('/temp',tempRouter);
@@ -37,6 +38,7 @@ app.use('/bump',bumpRouter);
 app.use('/device',devicesRouter);
 app.use('/realtime',realTimeRouter);
 app.use('/messaging',messagingRouter);
+app.use('/feedback',feedbackRouter);
 
 app.listen(port);
 
