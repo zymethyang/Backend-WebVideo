@@ -8,7 +8,7 @@ var FieldValue = require('firebase-admin').firestore.FieldValue;
 var moment = require('moment');
 
 
-feedbackRouter.route('/:uid')
+feedbackRouter.route('/')
     .all((req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
