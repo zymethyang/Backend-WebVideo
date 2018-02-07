@@ -39,8 +39,28 @@ errorRouter.route('/')
       }
     })
     .post((req, res, next) => {
-      res.statusCode = 403;
-      res.end('POST operation not supported on /errors');
+      var user = firebase.auth().currentUser || false;
+      if(user){
+        Errors.create({
+          uid: user.uid,
+          status: req.body,
+          startedAt: moment(FieldValue.serverTimestamp()).unix(),
+          updatedAt: moment(FieldValue.serverTimestamp()).unix()
+        }).then(result => {
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json('Successful');
+        }).catch((err) => {
+          console.log(err);
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json('Error');
+        });
+      }else{
+          res.statusCode = 200;
+          res.setHeader('Content-Type', 'application/json');
+          res.json("Error");
+      }
     })
     .put((req, res, next) => {
         res.statusCode = 403;
@@ -75,7 +95,7 @@ errorRouter.route('/')
         })
         .post((req, res, next) => {
           res.statusCode = 403;
-          res.end('POST operation not supported on /errors');
+          res.end('POST operation not supported on /error');
         })
         .put((req, res, next) => {
             res.statusCode = 403;
