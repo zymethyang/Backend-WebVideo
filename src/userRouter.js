@@ -134,7 +134,6 @@ userRouter.route('/getStatus')
     .get((req, res, next) => {
         var user = firebase.auth().currentUser || false;
         if (user) {
-
             var id = {
                 "uid":user.uid,
                 "displayName":user.displayName,
@@ -143,7 +142,6 @@ userRouter.route('/getStatus')
                 "emailVerified":user.emailVerified,
                 "phoneNumber":user.phoneNumber,
             }
-
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json(id);

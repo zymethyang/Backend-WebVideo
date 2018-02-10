@@ -55,13 +55,13 @@ humidityRouter.route('/')
                   res.json({"data":arrData,"time":arrTime});
                 })
                 .catch(err => {
-                    res.statusCode = 403;
+                    res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
                     res.json("Error");
                     console.log(err);
                 });
             }else{
-                res.statusCode = 403;
+                res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json("Error");
             }
