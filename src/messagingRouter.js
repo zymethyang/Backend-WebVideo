@@ -49,7 +49,7 @@ messagingRouter.route('/token')
                     res.json(result);
                 })
         } else {
-            res.statusCode = 403;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json('Error');
         }
