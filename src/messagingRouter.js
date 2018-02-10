@@ -77,7 +77,7 @@ messagingRouter.route('/token')
                     }
                 })
         } else {
-            res.statusCode = 403;
+            res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
             res.json('Error');
         }
