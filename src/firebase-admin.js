@@ -1,3 +1,4 @@
+const firebase = require('firebase');
 var config = {
   apiKey: "AIzaSyCIIHryAuKXee04I8YuXTffFZd262msz_g",
   authDomain: "admin-e8a7b.firebaseapp.com",
