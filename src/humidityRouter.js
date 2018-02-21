@@ -5,6 +5,7 @@ humidityRouter.use(bodyParser.json());
 
 const Humiditys = require('./models/humiditys');
 const firebase = require("firebase");
+const encryptToken = require('./shared/encryptToken');
 
 humidityRouter.route('/')
     .all((req, res, next) => {
@@ -38,33 +39,36 @@ humidityRouter.route('/')
         })
         .get((req, res, next) => {
             var time = parseInt(req.params.time);
-            var user = firebase.auth().currentUser || false;
-            if(user){
-                Humiditys.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
-                .then(result => {
-                  var arrData = new Array(0);
-                  var arrTime = new Array(0);
-                  result.map(res => {
-                    arrData.push(res.mean);
-                  });
-                  result.map(res => {
-                    arrTime.push(res.startedAt);
-                  });
-                  res.statusCode = 200;
-                  res.setHeader('Content-Type', 'application/json');
-                  res.json({"data":arrData,"time":arrTime});
-                })
-                .catch(err => {
+            if(req.headers.token!=='')
+            encryptToken(req.headers.token).then(data=>{
+              var user = data || false;
+              if(user){
+                  Humiditys.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
+                  .then(result => {
+                    var arrData = new Array(0);
+                    var arrTime = new Array(0);
+                    result.map(res => {
+                      arrData.push(res.mean);
+                    });
+                    result.map(res => {
+                      arrTime.push(res.startedAt);
+                    });
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
-                    res.json("Error");
-                    console.log(err);
-                });
-            }else{
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json("Error");
-            }
+                    res.json({"data":arrData,"time":arrTime});
+                  })
+                  .catch(err => {
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', 'application/json');
+                      res.json("Error");
+                      console.log(err);
+                  });
+              }else{
+                  res.statusCode = 200;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.json("Error");
+              }
+            })
         })
         .post((req, res, next) => {
             res.statusCode = 403;
@@ -87,25 +91,28 @@ humidityRouter.route('/')
             })
             .get((req, res, next) => {
                 var time = parseInt(req.params.time);
-                var user = firebase.auth().currentUser || false;
-                if(user){
-                    Humiditys.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
-                    .then(result => {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json(result);
-                    })
-                    .catch(err => {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json("Error");
-                        console.log(err);
-                    });
-                }else{
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json("Error");
-                }
+                if(req.headers.token!=='')
+                encryptToken(req.headers.token).then(data=>{
+                  var user = data || false;
+                  if(user){
+                      Humiditys.find({ uid: user.uid }).limit(time).sort({ 'updatedAt': -1 })
+                      .then(result => {
+                          res.statusCode = 200;
+                          res.setHeader('Content-Type', 'application/json');
+                          res.json(result);
+                      })
+                      .catch(err => {
+                          res.statusCode = 200;
+                          res.setHeader('Content-Type', 'application/json');
+                          res.json("Error");
+                          console.log(err);
+                      });
+                  }else{
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', 'application/json');
+                      res.json("Error");
+                  }
+                })
             })
             .post((req, res, next) => {
                 res.statusCode = 403;
@@ -131,28 +138,31 @@ humidityRouter.route('/')
                 var day = parseInt(req.params.day);
                 var i;
                 var data = new Array(0);
-                var user = firebase.auth().currentUser || false;
-                if(user){
-                    Humiditys.find({ uid: user.uid }).limit(day).sort({ 'updatedAt': -1 })
-                    .then(result => {
-                        for(i=0;i< result.length;i=i+gap){
-                          data.push(result[i])
-                        }
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json(data);
-                    })
-                    .catch(err => {
-                        res.statusCode = 200;
-                        res.setHeader('Content-Type', 'application/json');
-                        res.json("Error");
-                        console.log(err);
-                    });
-                }else{
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json("Error");
-                }
+                if(req.headers.token!=='')
+                encryptToken(req.headers.token).then(users=>{
+                  var user = users || false;
+                  if(user){
+                      Humiditys.find({ uid: user.uid }).limit(day).sort({ 'updatedAt': -1 })
+                      .then(result => {
+                          for(i=0;i< result.length;i=i+gap){
+                            data.push(result[i])
+                          }
+                          res.statusCode = 200;
+                          res.setHeader('Content-Type', 'application/json');
+                          res.json(data);
+                      })
+                      .catch(err => {
+                          res.statusCode = 200;
+                          res.setHeader('Content-Type', 'application/json');
+                          res.json("Error");
+                          console.log(err);
+                      });
+                  }else{
+                      res.statusCode = 200;
+                      res.setHeader('Content-Type', 'application/json');
+                      res.json("Error");
+                  }
+                })
             })
             .post((req, res, next) => {
                 res.statusCode = 403;

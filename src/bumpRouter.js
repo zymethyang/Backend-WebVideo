@@ -8,7 +8,7 @@ const Bumps = require('./models/bumps');
 const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
-
+const encryptToken = require('./shared/encryptToken');
 
 
 bumpRouter.route('/')
@@ -19,7 +19,9 @@ bumpRouter.route('/')
         next();
     })
     .get((req, res) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             console.log(user.uid + ' GET Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Bumps.findOne({ uid: user.uid }).sort({ updatedAt: -1 })
@@ -40,9 +42,12 @@ bumpRouter.route('/')
             res.statusCode = 200;
             res.json('Error');
         }
+      })
     })
     .post((req, res, next) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             console.log(user.uid + ' POST Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Bumps.create({
@@ -87,6 +92,7 @@ bumpRouter.route('/')
             res.json(false);
             res.statusCode = 200;
         }
+      })
     })
     .put((req, res, next) => {
         res.statusCode = 403;
@@ -117,23 +123,26 @@ bumpRouter.route('/')
             res.end('PUT operation not supported on /bumps');
         })
         .delete((req, res, next) => {
-          var user = firebase.auth().currentUser || false;
-          if (user) {
-              console.log(user.uid + ' DELETE Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
-              Bumps.findByIdAndRemove(req.params.bumpId)
-                  .then(() => {
-                  res.statusCode = 200;
-                  res.json(true);
-              }).catch(function (error) {
-                  res.statusCode = 200;
-                  res.json(false);
-                  console.error("Fail to DELETE Bump Status ! ", error);
-              });
-          } else {
-              console.log(' Fail to DELETE Bump Status !');
-              res.json(false);
-              res.statusCode = 200;
-          }
+          if(req.headers.token!=='')
+          encryptToken(req.headers.token).then(data=>{
+            var user = data || false;
+            if (user) {
+                console.log(user.uid + ' DELETE Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
+                Bumps.findByIdAndRemove(req.params.bumpId)
+                    .then(() => {
+                    res.statusCode = 200;
+                    res.json(true);
+                }).catch(function (error) {
+                    res.statusCode = 200;
+                    res.json(false);
+                    console.error("Fail to DELETE Bump Status ! ", error);
+                });
+            } else {
+                console.log(' Fail to DELETE Bump Status !');
+                res.json(false);
+                res.statusCode = 200;
+            }
+          })
         });
 
 
@@ -145,7 +154,9 @@ bumpRouter.route('/doingTask')
         next();
     })
     .get((req, res) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             console.log(user.uid + ' GET Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
@@ -166,6 +177,7 @@ bumpRouter.route('/doingTask')
             res.statusCode = 200;
             res.json('Error');
         }
+      })
     })
     .post((req, res, next) => {
         res.statusCode = 403;
@@ -188,7 +200,9 @@ bumpRouter.route('/doingTask')
             next();
         })
         .get((req, res) => {
-            var user = firebase.auth().currentUser || false;
+          if(req.headers.token!=='')
+          encryptToken(req.headers.token).then(data=>{
+            var user = data || false;
             if (user) {
                 console.log(user.uid + ' GET Name Bump ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
                 Bumps.find({ $and: [{ uid: user.uid }, { 'status.from': { $lte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.to': { $gte: moment(FieldValue.serverTimestamp()).unix() } }, { 'status.cCalender': { $eq: true } }] }).sort({ updatedAt: -1 })
@@ -220,6 +234,7 @@ bumpRouter.route('/doingTask')
                 res.statusCode = 403;
                 res.json('Error');
             }
+          })
         })
         .post((req, res, next) => {
             res.statusCode = 403;
@@ -242,7 +257,9 @@ bumpRouter.route('/tempTask')
         next();
     })
     .get((req, res) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             console.log(user.uid + ' GET Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Bumps.findOne({ $and: [{ uid: user.uid }, { 'status.cTemp': { $eq: true } }] }).sort({ updatedAt: -1 })
@@ -263,6 +280,7 @@ bumpRouter.route('/tempTask')
             res.statusCode = 403;
             res.json('Error');
         }
+      })
     })
     .post((req, res, next) => {
         res.statusCode = 403;
@@ -285,7 +303,9 @@ bumpRouter.route('/humidityTask')
         next();
     })
     .get((req, res) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             console.log(user.uid + ' GET Bump Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Bumps.findOne({ $and: [{ uid: user.uid }, { 'status.cHumidity': { $eq: true } }] }).sort({ updatedAt: -1 })
@@ -306,6 +326,7 @@ bumpRouter.route('/humidityTask')
             res.statusCode = 403;
             res.json('Error');
         }
+      })
     })
     .post((req, res, next) => {
         res.statusCode = 403;

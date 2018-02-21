@@ -7,6 +7,7 @@ const Devices = require('./models/devices');
 const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
+const encryptToken = require('./shared/encryptToken');
 
 devicesRouter.route('/name/:name')
     .all((req, res, next) => {
@@ -16,7 +17,9 @@ devicesRouter.route('/name/:name')
         next();
     })
     .get((req, res) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             var name = req.params.name;
             console.log(user.uid + ' GET DEVICE Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
@@ -38,6 +41,7 @@ devicesRouter.route('/name/:name')
             res.statusCode = 200;
             res.json('Error');
         }
+      })
     })
     .post((req, res, next) => {
         res.statusCode = 403;
@@ -64,7 +68,9 @@ devicesRouter.route('/name')
         res.end('GET operation not supported on /bumps');
     })
     .post((req, res, next) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             console.log(user.uid + ' POST DEVICE Status ! at ' + moment(FieldValue.serverTimestamp()).format("YYYY-MM-DD hh:mm a"));
             Devices.create({
@@ -85,6 +91,7 @@ devicesRouter.route('/name')
             res.json(false);
             res.statusCode = 200;
         }
+      })
     })
     .put((req, res, next) => {
         res.statusCode = 403;

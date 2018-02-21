@@ -7,6 +7,7 @@ const Messagings = require('./models/messagings');
 const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
+const encryptToken = require('./shared/encryptToken');
 
 messagingRouter.route('/')
     .all((req, res, next) => {
@@ -40,7 +41,9 @@ messagingRouter.route('/token')
         next();
     })
     .get((req, res, next) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             Messagings.find({ uid: user.uid })
                 .then(result => {
@@ -53,9 +56,12 @@ messagingRouter.route('/token')
             res.setHeader('Content-Type', 'application/json');
             res.json('Error');
         }
+      })
     })
     .post((req, res, next) => {
-        var user = firebase.auth().currentUser || false;
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
         if (user) {
             Messagings.findOne({ $and: [{ uid: user.uid }, { token: req.body.token }] })
                 .then(result => {
@@ -81,6 +87,7 @@ messagingRouter.route('/token')
             res.setHeader('Content-Type', 'application/json');
             res.json('Error');
         }
+      })
     })
     .put((req, res, next) => {
         res.statusCode = 403;

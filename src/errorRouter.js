@@ -10,6 +10,7 @@ const Messagings = require('./models/messagings');
 var FieldValue = require('firebase-admin').firestore.FieldValue;
 var moment = require('moment');
 const firebase = require("firebase");
+const encryptToken = require('./shared/encryptToken');
 
 errorRouter.route('/')
     .all((req, res, next) => {
@@ -19,48 +20,54 @@ errorRouter.route('/')
         next();
     })
     .get((req, res) => {
-      var user = firebase.auth().currentUser || false;
-      if (user) {
-           Errors.findOne({ uid: user.uid }).sort({ updatedAt: -1 })
-              .then(error => {
-                  res.statusCode = 200;
-                  res.setHeader('Content-Type', 'application/json');
-                  res.json(error);
-              })
-              .catch(err => {
-                  res.statusCode = 200;
-                  res.setHeader('Content-Type', 'application/json');
-                  res.json('Error');
-              });
-      } else {
-          res.setHeader('Content-Type', 'application/json');
-          res.statusCode = 200;
-          res.json('Error');
-      }
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
+        if (user) {
+             Errors.findOne({ uid: user.uid }).sort({ updatedAt: -1 })
+                .then(error => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(error);
+                })
+                .catch(err => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json('Error');
+                });
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.statusCode = 200;
+            res.json('Error');
+        }
+      })
     })
     .post((req, res, next) => {
-      var user = firebase.auth().currentUser || false;
-      if(user){
-        Errors.create({
-          uid: user.uid,
-          status: req.body,
-          startedAt: moment(FieldValue.serverTimestamp()).unix(),
-          updatedAt: moment(FieldValue.serverTimestamp()).unix()
-        }).then(result => {
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json('Successful');
-        }).catch((err) => {
-          console.log(err);
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json('Error');
-        });
-      }else{
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json("Error");
-      }
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
+        if(user){
+          Errors.create({
+            uid: user.uid,
+            status: req.body,
+            startedAt: moment(FieldValue.serverTimestamp()).unix(),
+            updatedAt: moment(FieldValue.serverTimestamp()).unix()
+          }).then(result => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json('Successful');
+          }).catch((err) => {
+            console.log(err);
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json('Error');
+          });
+        }else{
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json("Error");
+        }
+      })
     })
     .put((req, res, next) => {
         res.statusCode = 403;

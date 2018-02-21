@@ -5,6 +5,7 @@ realtimeRouter.use(bodyParser.json());
 
 const Realtime = require('./models/realTime');
 const firebase = require("firebase");
+const encryptToken = require('./shared/encryptToken');
 
 realtimeRouter.route('/')
     .all((req, res, next) => {
@@ -14,24 +15,28 @@ realtimeRouter.route('/')
         next();
     })
     .get((req, res, next) => {
-      var user = firebase.auth().currentUser || false;
-      if(user){
-          Realtime.find({ uid: user.uid })
-          .then(result => {
-              res.statusCode = 200;
-              res.setHeader('Content-Type', 'application/json');
-              res.json(result);
-          })
-          .catch(err => {
-              res.statusCode = 200;
-              res.setHeader('Content-Type', 'application/json');
-              res.json("Error");
-          });
-      }else{
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json("Error");
-      }
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
+        if(user){
+            Realtime.find({ uid: user.uid })
+            .then(result => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(result);
+            })
+            .catch(err => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json("Error");
+            });
+        }else{
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json("Error");
+        }
+      })
+
     })
     .post((req, res, next) => {
         res.statusCode = 403;

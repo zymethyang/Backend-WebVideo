@@ -60,9 +60,13 @@ userRouter.route('/login')
         next();
     })
     .get((req, res, next) => {
+        var id_token = googleUser.getAuthResponse().id_token
+        console.log(id_token);
+        
+        /*
       res.statusCode = 403;
       res.setHeader('Content-Type', 'application/json');
-      res.end('GET operation not supported on /login');
+      res.end('GET operation not supported on /login');*/
     })
     .post((req, res, next) => {
         firebase.auth().signInWithEmailAndPassword(req.body.email, req.body.password)
@@ -135,12 +139,12 @@ userRouter.route('/getStatus')
         var user = firebase.auth().currentUser || false;
         if (user) {
             var id = {
-                "uid":user.uid,
-                "displayName":user.displayName,
-                "photoURL":user.photoURL,
-                "email":user.email,
-                "emailVerified":user.emailVerified,
-                "phoneNumber":user.phoneNumber,
+                "uid": user.uid,
+                "displayName": user.displayName,
+                "photoURL": user.photoURL,
+                "email": user.email,
+                "emailVerified": user.emailVerified,
+                "phoneNumber": user.phoneNumber,
             }
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');

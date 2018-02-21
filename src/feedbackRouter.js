@@ -7,6 +7,7 @@ const Feedback = require('./models/feedback');
 var FieldValue = require('firebase-admin').firestore.FieldValue;
 var moment = require('moment');
 const firebase = require("firebase");
+const encryptToken = require('./shared/encryptToken');
 
 feedbackRouter.route('/')
     .all((req, res, next) => {
@@ -16,24 +17,27 @@ feedbackRouter.route('/')
         next();
     })
     .get((req, res) => {
-      var user = firebase.auth().currentUser || false;
-      if(user){
-          Feedback.find({ uid: user.uid })
-          .then(result => {
-              res.statusCode = 200;
-              res.setHeader('Content-Type', 'application/json');
-              res.json(result);
-          })
-          .catch(err => {
-              res.statusCode = 200;
-              res.setHeader('Content-Type', 'application/json');
-              res.json("Error");
-          });
-      }else{
-          res.statusCode = 200;
-          res.setHeader('Content-Type', 'application/json');
-          res.json("Error");
-      }
+      if(req.headers.token!=='')
+      encryptToken(req.headers.token).then(data=>{
+        var user = data || false;
+        if(user){
+            Feedback.find({ uid: user.uid })
+            .then(result => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(result);
+            })
+            .catch(err => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json("Error");
+            });
+        }else{
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json("Error");
+        }
+      })
     })
     .post((req, res, next) => {
       res.statusCode = 403;
