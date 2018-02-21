@@ -4,7 +4,6 @@ const tempRouter = express.Router();
 tempRouter.use(bodyParser.json());
 
 const Temps = require('./models/temps');
-const firebase = require("firebase");
 const encryptToken = require('./shared/encryptToken');
 
 tempRouter.route('/')

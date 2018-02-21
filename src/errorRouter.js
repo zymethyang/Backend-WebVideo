@@ -6,10 +6,8 @@ errorRouter.use(bodyParser.json());
 
 const Errors = require('./models/error');
 const Code = require('./models/code');
-const Messagings = require('./models/messagings');
 var FieldValue = require('firebase-admin').firestore.FieldValue;
 var moment = require('moment');
-const firebase = require("firebase");
 const encryptToken = require('./shared/encryptToken');
 
 errorRouter.route('/')

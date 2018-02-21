@@ -4,9 +4,6 @@ const feedbackRouter = express.Router();
 feedbackRouter.use(bodyParser.json());
 
 const Feedback = require('./models/feedback');
-var FieldValue = require('firebase-admin').firestore.FieldValue;
-var moment = require('moment');
-const firebase = require("firebase");
 const encryptToken = require('./shared/encryptToken');
 
 feedbackRouter.route('/')

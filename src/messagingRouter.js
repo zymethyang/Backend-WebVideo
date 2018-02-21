@@ -4,7 +4,6 @@ const messagingRouter = express.Router();
 messagingRouter.use(bodyParser.json());
 
 const Messagings = require('./models/messagings');
-const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
 const encryptToken = require('./shared/encryptToken');

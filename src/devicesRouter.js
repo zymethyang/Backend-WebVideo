@@ -4,7 +4,6 @@ const devicesRouter = express.Router();
 devicesRouter.use(bodyParser.json());
 
 const Devices = require('./models/devices');
-const firebase = require("firebase");
 var FieldValue = require("firebase-admin").firestore.FieldValue;
 var moment = require('moment');
 const encryptToken = require('./shared/encryptToken');

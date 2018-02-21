@@ -4,7 +4,6 @@ const humidityRouter = express.Router();
 humidityRouter.use(bodyParser.json());
 
 const Humiditys = require('./models/humiditys');
-const firebase = require("firebase");
 const encryptToken = require('./shared/encryptToken');
 
 humidityRouter.route('/')

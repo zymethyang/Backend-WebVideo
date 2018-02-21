@@ -4,7 +4,6 @@ const realtimeRouter = express.Router();
 realtimeRouter.use(bodyParser.json());
 
 const Realtime = require('./models/realTime');
-const firebase = require("firebase");
 const encryptToken = require('./shared/encryptToken');
 
 realtimeRouter.route('/')
