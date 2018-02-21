@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var request = require('request');
 const errorRouter = express.Router();
 errorRouter.use(bodyParser.json());
 
