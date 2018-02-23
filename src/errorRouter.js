@@ -17,7 +17,7 @@ errorRouter.route('/')
         next();
     })
     .get((req, res) => {
-      if(req.headers.token!=='')
+      if(req.headers.token)
       encryptToken(req.headers.token).then(data=>{
         var user = data || false;
         if (user) {
