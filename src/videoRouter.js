@@ -78,7 +78,7 @@ videoRouter.route('/get/:num')
             .catch(err => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(videos);
+                res.json(err);
             });
     })
     .post((req, res, next) => {

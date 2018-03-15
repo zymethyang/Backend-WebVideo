@@ -15,13 +15,15 @@ const connect = mongoose.connect(url, {
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors({credentials: true, origin: '*'}));
+app.use(cors({ credentials: true, origin: '*' }));
 
 var port = process.env.PORT || 4000;
 
 const videoRouter = require('./videoRouter');
+const botChannelRouter = require('./botChannelRouter');
 
-app.use('/video',videoRouter);
+app.use('/video', videoRouter);
+app.use('/bot/channel', botChannelRouter);
 
 app.listen(port);
 
