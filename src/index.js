@@ -19,27 +19,9 @@ app.use(cors({credentials: true, origin: '*'}));
 
 var port = process.env.PORT || 4000;
 
-const router = require('./routes');
-const userRouter = require('./userRouter');
-const tempRouter = require('./tempRouter');
-const humidityRouter = require('./humidityRouter');
-const bumpRouter = require('./bumpRouter');
-const devicesRouter = require('./devicesRouter');
-const realTimeRouter = require('./realtimeRouter');
-const messagingRouter = require('./messagingRouter');
-const feedbackRouter = require('./feedbackRouter');
-const errorRouter = require('./errorRouter');
+const videoRouter = require('./videoRouter');
 
-app.use('/', router);
-app.use('/temp',tempRouter);
-app.use('/humidity',humidityRouter);
-app.use('/user',userRouter);
-app.use('/bump',bumpRouter);
-app.use('/device',devicesRouter);
-app.use('/realtime',realTimeRouter);
-app.use('/messaging',messagingRouter);
-app.use('/feedback',feedbackRouter);
-app.use('/error',errorRouter);
+app.use('/video',videoRouter);
 
 app.listen(port);
 
