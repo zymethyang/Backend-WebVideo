@@ -22,11 +22,12 @@ var port = process.env.PORT || 4000;
 const videoRouter = require('./videoRouter');
 const botChannelRouter = require('./botChannelRouter');
 const botPlaylistRouter = require('./botPlaylistRouter');
-
+const botIDVideoRouter = require('./botIDVideoRouter');
 
 app.use('/video', videoRouter);
 app.use('/bot/channel', botChannelRouter);
 app.use('/bot/playlist', botPlaylistRouter);
+app.use('/bot/idvideo', botIDVideoRouter);
 
 app.listen(port);
 
