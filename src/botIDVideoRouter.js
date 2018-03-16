@@ -28,15 +28,19 @@ BotIDVideoRouter.route('/')
             });
     })
     .post((req, res, next) => {
-        BotIDVideo.create(req.body).then((info) => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({ status: true, detail: '' });
-        }).catch(err => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json({ status: true, detail: '' });
+        req.body.forEach((value,index)=>{
+        BotIDVideo.create({'id':value})
+        .then(() => {
+
         })
+        .catch((err)=>{
+
+          })
+        })
+
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ status: true, detail: '' });
     })
     .put((req, res, next) => {
         res.statusCode = 403;
