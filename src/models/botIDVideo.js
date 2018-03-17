@@ -6,7 +6,7 @@ var Schema = mongoose.Schema;
 var BotIDVideo = new Schema({
   id: {
     type: String,
-    unique: true
+    unique: false
   }
 });
 

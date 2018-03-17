@@ -28,11 +28,13 @@ BotIDVideoRouter.route('/')
             });
     })
     .post((req, res, next) => {
-        console.log(req.body);
         var data = Object.values(req.body);
-        data.forEach((value,index)=>{
-          BotIDVideo.create({'id':value})
-          .then(() => {}).catch((err)=>{})
+        BotIDVideo.create(data)
+        .then(() => {
+          console.log('finished');
+        })
+        .catch((err)=>{
+          console.log(err)
         })
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');

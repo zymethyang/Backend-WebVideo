@@ -3,25 +3,6 @@ var timestamps = require('mongoose-timestamp');
 var Schema = mongoose.Schema;
 
 
-var Video = new Schema({
-  kind: {
-    type: String,
-    default: ''
-  },
-  etag: {
-    type: String,
-    unique: true
-  },
-  pageInfo: {
-    type: Object,
-    default: ''
-  },
-  items: {
-    type: Array,
-    default: [Items]
-  }
-});
-
 var Items = new Schema({
   kind: {
     type: String,
@@ -33,7 +14,8 @@ var Items = new Schema({
   },
   id: {
     type: String,
-    default: ''
+    default: '',
+    unique:true
   },
   snippet: {
     type: Object,
@@ -52,6 +34,25 @@ var Items = new Schema({
     default: {}
   }
 })
+
+var Video = new Schema({
+  kind: {
+    type: String,
+    default: ''
+  },
+  etag: {
+    type: String,
+    default: ''
+  },
+  pageInfo: {
+    type: Object,
+    default: ''
+  },
+  items: {
+    type: [Items],
+  }
+});
+
 
 Video.plugin(timestamps);
 module.exports = mongoose.model('Video', Video);
