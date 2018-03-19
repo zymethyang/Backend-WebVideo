@@ -15,7 +15,7 @@ BotIDVideoRouter.route('/')
         next();
     })
     .get((req, res, next) => {
-        BotIDVideo.find().sort({ 'updatedAt': -1 })
+        BotIDVideo.find().limit(2).sort({ 'updatedAt': -1 })
             .then(channels => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -30,12 +30,12 @@ BotIDVideoRouter.route('/')
     .post((req, res, next) => {
         var data = Object.values(req.body);
         BotIDVideo.create(data)
-        .then(() => {
-          console.log('finished');
-        })
-        .catch((err)=>{
-          console.log(err)
-        })
+            .then(() => {
+                console.log('finished');
+            })
+            .catch((err) => {
+                console.log(err)
+            })
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({ status: true, detail: '' });

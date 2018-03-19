@@ -42,6 +42,7 @@ videoRouter.route('/add')
         res.end('GET operation not supported');
     })
     .post((req, res, next) => {
+        console.log(req.body);
         Video.create(req.body).then((info) => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
@@ -70,6 +71,43 @@ videoRouter.route('/get/:num')
     .get((req, res, next) => {
         var time = parseInt(req.params.num);
         Video.find().limit(time).sort({ 'updatedAt': -1 })
+            .then(videos => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(videos);
+            })
+            .catch(err => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(err);
+            });
+    })
+    .post((req, res, next) => {
+        res.statusCode = 403;
+        res.end('POST operation not supported');
+    })
+    .put((req, res, next) => {
+        res.statusCode = 403;
+        res.end('PUT operation not supported');
+    })
+    .delete((req, res, next) => {
+        res.end('DELETE operation not supported');
+    });
+
+
+videoRouter.route('/get/:time/:topic')
+    .all((req, res, next) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.header('Access-Control-Allow-Origin', '*');
+        next();
+    })
+    .get((req, res, next) => {
+        var time = parseInt(req.params.time);
+        var topic = parseInt(req.params.topic);
+        console.log(topic);
+        console.log(time);
+        Video.find({ 'items.snippet.id': topic }).limit(time).sort({ 'updatedAt': -1 })
             .then(videos => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
