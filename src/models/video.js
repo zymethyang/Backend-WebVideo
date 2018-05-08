@@ -3,56 +3,98 @@ var timestamps = require('mongoose-timestamp');
 var Schema = mongoose.Schema;
 
 
-var Items = new Schema({
-  kind: {
-    type: String,
-    default: ''
-  },
-  etag: {
-    type: String,
-    default: ''
-  },
-  id: {
-    type: String,
-    default: '',
-    unique:true
-  },
-  snippet: {
-    type: Object,
-    default: {}
-  },
-  contentDetails: {
-    type: Object,
-    default: {}
-  },
-  status: {
-    type: Object,
-    default: {}
-  },
-  statistics: {
-    type: Object,
-    default: {}
-  }
-})
 
 var Video = new Schema({
-  kind: {
+  media: {
+    type: Number,
+    default: 1
+  },
+  token: {
+    type: String,
+    default: null
+  },
+  pub: {
+    type: Number,
+    default: 1
+  },
+  private: {
+    type: Number,
+    default: 0
+  },
+  user_id: {
+    type: Number,
+    default: null
+  },
+  date: {
     type: String,
     default: ''
   },
-  etag: {
+  featured: {
+    type: Number,
+    default: 0
+  },
+  source: {
+    type: String,
+    default: null
+  },
+  tmp_source: {
+    type: String,
+    default: null
+  },
+  title: {
+    type: String,
+    default: 'Chưa có tiêu đề'
+  },
+  thumb: {
     type: String,
     default: ''
   },
-  pageInfo: {
-    type: Object,
-    default: ''
+  duration: {
+    type: Number,
+    default: 0
   },
-  items: {
-    type: [Items],
+  description: {
+    type: String,
+    default: 'Chưa có mô tả'
+  },
+  category: {
+    type: Number,
+    default: 0
+  },
+  views: {
+    type: Number,
+    default: 0
+  },
+  liked: {
+    type: Number,
+    default: 0
+  },
+  disliked: {
+    type: Number,
+    default: 0
+  },
+  nsfw: {
+    type: Number,
+    default: 0
+  },
+  embed: {
+    type: String,
+    default: null
+  },
+  remote: {
+    type: String,
+    default: null
+  },
+  srt: {
+    type: String,
+    default: null
+  },
+  privacy: {
+    type: Number,
+    default: 0
   }
 });
 
 
 Video.plugin(timestamps);
-module.exports = mongoose.model('Video', Video);
+module.exports = mongoose.model('vibe_video', Video);

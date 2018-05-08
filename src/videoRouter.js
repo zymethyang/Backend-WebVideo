@@ -15,7 +15,41 @@ videoRouter.route('/')
     })
     .get((req, res, next) => {
         res.statusCode = 403;
-        res.end('GET operation not supported on /temp');
+        res.end('POST operation not supported on /temp');
+    })
+    .post((req, res, next) => {
+        res.statusCode = 403;
+        res.end('POST operation not supported on /temp');
+    })
+    .put((req, res, next) => {
+        res.statusCode = 403;
+        res.end('PUT operation not supported on /temp');
+    })
+    .delete((req, res, next) => {
+        res.end('DELETE operation not supported on /temp');
+    });
+
+videoRouter.route('/id/:id')
+    .all((req, res, next) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.header('Access-Control-Allow-Origin', '*');
+        next();
+    })
+    .get((req, res, next) => {
+        var id = req.params.id;
+        let query = { source: `/.*${id}.*/` }
+        Video.findOne({ source: { $regex: id, $options: "x" } })
+            .then(video => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(video);
+            })
+            .catch(err => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(err);
+            });
     })
     .post((req, res, next) => {
         res.statusCode = 403;
@@ -42,7 +76,6 @@ videoRouter.route('/add')
         res.end('GET operation not supported');
     })
     .post((req, res, next) => {
-        console.log(req.body);
         Video.create(req.body).then((info) => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
@@ -70,7 +103,7 @@ videoRouter.route('/get/:num')
     })
     .get((req, res, next) => {
         var time = parseInt(req.params.num);
-        Video.find().limit(time).sort({ 'updatedAt': -1 })
+        Video.find().limit(time).sort({ 'date': -1 })
             .then(videos => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
@@ -105,9 +138,7 @@ videoRouter.route('/get/:time/:topic')
     .get((req, res, next) => {
         var time = parseInt(req.params.time);
         var topic = parseInt(req.params.topic);
-        console.log(topic);
-        console.log(time);
-        Video.find({ 'items.snippet.id': topic }).limit(time).sort({ 'updatedAt': -1 })
+        Video.find({ category: topic }).limit(time).sort({ 'updatedAt': -1 })
             .then(videos => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
