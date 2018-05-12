@@ -2,8 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const videoRouter = express.Router();
 videoRouter.use(bodyParser.json());
-
+const axios = require('axios');
 const Video = require('./models/video');
+var moment = require('moment');
 
 
 videoRouter.route('/')
@@ -41,9 +42,54 @@ videoRouter.route('/id/:id')
         let query = { source: `/.*${id}.*/` }
         Video.findOne({ source: { $regex: id, $options: "x" } })
             .then(video => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json(video);
+                if (video) {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json(video);
+                } else {
+                    axios.get(`https://www.googleapis.com/youtube/v3/videos?part=id,contentDetails,snippet&contentDetails&id=${id}&key=AIzaSyAthUU-wzxrK545NRGetzyw-Kig4EtuQtY`).then((vid) => {
+                        if (vid.data.items.length > 0) {
+                            Video.create({
+                                media: 1,
+                                token: null,
+                                pub: 1,
+                                private: 0,
+                                user_id: 1,
+                                date: vid.data.items[0].snippet.publishedAt,
+                                featured: 0,
+                                source: `https://www.youtube.com/watch?v=${vid.data.items[0].id}`,
+                                tmp_source: null,
+                                title: vid.data.items[0].snippet.title,
+                                thumb: vid.data.items[0].snippet.thumbnails.medium.url,
+                                duration: moment.duration(vid.data.items[0].contentDetails.duration, moment.ISO_8601).asSeconds(),
+                                description: vid.data.items[0].snippet.description,
+                                category: vid.data.items[0].snippet.categoryId,
+                                views: 0,
+                                liked: 0,
+                                disliked: 0,
+                                nsfw: 0,
+                                embed: null,
+                                remote: null,
+                                srt: null,
+                                privacy: 0
+                            }).then(() => {
+                                Video.findOne({ source: { $regex: id, $options: "x" } }).then(d => {
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json(d);
+                                }).catch(() => {
+                                    res.statusCode = 200;
+                                    res.setHeader('Content-Type', 'application/json');
+                                    res.json(null);
+                                })
+                            })
+                        } else {
+                            res.statusCode = 200;
+                            res.setHeader('Content-Type', 'application/json');
+                            res.json(null);
+                        }
+                    })
+                }
             })
             .catch(err => {
                 res.statusCode = 200;

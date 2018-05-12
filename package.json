@@ -25,6 +25,7 @@
   "homepage": "https://github.com/antonybudianto/express-firebase#readme",
   "dependencies": {
     "@types/dotenv": "^4.0.2",
+    "axios": "^0.18.0",
     "body-parser": "^1.17.0",
     "cors": "^2.8.4",
     "dotenv": "^4.0.0",
