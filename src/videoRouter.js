@@ -4,7 +4,7 @@ const videoRouter = express.Router();
 videoRouter.use(bodyParser.json());
 
 const Video = require('./models/video');
-const encryptToken = require('./shared/encryptToken');
+
 
 videoRouter.route('/')
     .all((req, res, next) => {
@@ -162,6 +162,46 @@ videoRouter.route('/get/:time/:topic')
         res.end('DELETE operation not supported');
     });
 
+/*
+videoRouter.route('/related/:title')
+    .all((req, res, next) => {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.header('Access-Control-Allow-Origin', '*');
+        next();
+    })
+    .get((req, res, next) => {
+        var title = parseInt(req.params.title);
+        Video.aggregate({
+            "$lookup": {
+                "from": { title: 'FAKER bật Tool Mod Taliyah Farm người thay lính, khổ thân team bạn bất lực buông chuột phút 20' },
+                "localField": 'title',
+                "foreignField": 'title',
+                "as": 'videos'
+            }
+        }).limit(1).then(videos => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(videos);
+        }).catch(err => {
+            res.statusCode = 200;
+            res.setHeader('Content-Type', 'application/json');
+            res.json(err);
+        });
+    })
+    .post((req, res, next) => {
+        res.statusCode = 403;
+        res.end('POST operation not supported');
+    })
+    .put((req, res, next) => {
+        res.statusCode = 403;
+        res.end('PUT operation not supported');
+    })
+    .delete((req, res, next) => {
+        res.end('DELETE operation not supported');
+    });
+
+*/
 
 
 module.exports = videoRouter;

@@ -4,7 +4,7 @@ const BotIDVideoRouter = express.Router();
 BotIDVideoRouter.use(bodyParser.json());
 
 const BotIDVideo = require('./models/botIDVideo');
-const encryptToken = require('./shared/encryptToken');
+
 
 
 BotIDVideoRouter.route('/')

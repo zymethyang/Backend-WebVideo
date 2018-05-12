@@ -4,7 +4,6 @@ const BotChannelRouter = express.Router();
 BotChannelRouter.use(bodyParser.json());
 
 const BotChannel = require('./models/botChannel');
-const encryptToken = require('./shared/encryptToken');
 
 
 BotChannelRouter.route('/')
