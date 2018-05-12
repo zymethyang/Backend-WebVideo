@@ -187,28 +187,9 @@ videoRouter.route('/get/:time/:topic')
         var topic = parseInt(req.params.topic);
         Video.find({ category: topic }).limit(time).sort({ 'updatedAt': -1 })
             .then(videos => {
-                let tmpVideos = [];
-                let load = new Promise((resolve, reject) => {
-                    videos.forEach((vid, index) => {
-                        axios.get(vid.thumb).then(res => {
-                            tmpVideos.push(vid);
-                        }).catch((err) => {
-                            console.log(index);
-                        })
-                    })
-                    setTimeout(() => {
-                        resolve(tmpVideos);
-                    }, 800)
-                })
-
-                Promise.all([load]).then((data) => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(data);
-                }).catch(err => {
-                    console.log(err);
-                })
-                
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(videos);
             })
             .catch(err => {
                 res.statusCode = 200;
