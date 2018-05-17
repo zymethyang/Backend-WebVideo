@@ -5,7 +5,7 @@ videoRouter.use(bodyParser.json());
 const axios = require('axios');
 const Video = require('./models/video');
 var moment = require('moment');
-
+var get_related = require('./shared/getRelated');
 
 videoRouter.route('/')
     .all((req, res, next) => {
@@ -208,8 +208,7 @@ videoRouter.route('/get/:time/:topic')
         res.end('DELETE operation not supported');
     });
 
-/*
-videoRouter.route('/related/:title')
+videoRouter.route('/related/:id')
     .all((req, res, next) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -217,23 +216,12 @@ videoRouter.route('/related/:title')
         next();
     })
     .get((req, res, next) => {
-        var title = parseInt(req.params.title);
-        Video.aggregate({
-            "$lookup": {
-                "from": { title: 'FAKER bật Tool Mod Taliyah Farm người thay lính, khổ thân team bạn bất lực buông chuột phút 20' },
-                "localField": 'title',
-                "foreignField": 'title',
-                "as": 'videos'
-            }
-        }).limit(1).then(videos => {
+        var id = req.params.id;
+        get_related(id, 0).then(data => {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json(videos);
-        }).catch(err => {
-            res.statusCode = 200;
-            res.setHeader('Content-Type', 'application/json');
-            res.json(err);
-        });
+            res.json(data);
+        })
     })
     .post((req, res, next) => {
         res.statusCode = 403;
@@ -247,7 +235,6 @@ videoRouter.route('/related/:title')
         res.end('DELETE operation not supported');
     });
 
-*/
 
 
 module.exports = videoRouter;
